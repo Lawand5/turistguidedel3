@@ -32,25 +32,24 @@ public class TouristRepository {
                 attraction.setName(rs.getString("name"));
                 attraction.setDescription(rs.getString("description"));
 
-                // Prøv at læse city
-                String cityStr = rs.getString("city");
+                // Robust City parsing
                 try {
-                    attraction.setCity(City.valueOf(cityStr));
+                    attraction.setCity(City.valueOf(rs.getString("city")));
                 } catch (IllegalArgumentException e) {
-                    System.out.println("Ugyldig city-værdi i databasen: " + cityStr);
-                    continue; // Spring over denne række
+                    System.out.println("Ugyldig by ignoreret: " + rs.getString("city"));
+                    attraction.setCity(null); // eller vælg en default hvis nødvendigt
                 }
 
-                // Prøv at læse tags
+                // Robust Tags parsing
                 String tagsString = rs.getString("tags");
-                if (tagsString != null && !tagsString.isBlank()) {
+                if (tagsString != null) {
                     List<Tags> tags = Arrays.stream(tagsString.split(","))
                             .map(String::trim)
                             .map(tag -> {
                                 try {
                                     return Tags.valueOf(tag);
                                 } catch (IllegalArgumentException e) {
-                                    System.out.println("Ugyldigt tag i databasen: " + tag);
+                                    System.out.println("Ugyldigt tag ignoreret: " + tag);
                                     return null;
                                 }
                             })
@@ -60,7 +59,6 @@ public class TouristRepository {
                 }
 
                 attractions.add(attraction);
-                System.out.println("Tilføjede attraktion: " + attraction.getName());
             }
 
         } catch (SQLException e) {
@@ -69,6 +67,7 @@ public class TouristRepository {
 
         return attractions;
     }
+
 
 
     public TouristAttraction findTouristAttractionByName(String name) {
