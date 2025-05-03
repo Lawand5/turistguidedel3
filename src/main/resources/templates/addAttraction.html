@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+  <meta charset="UTF-8">
+  <link th:href="@{/main.css}" rel="stylesheet">
+  <title>Add Tourist Attraction</title>
+</head>
+<body>
+<h1>Tilføj Ny Turistattraktion</h1>
+
+<form th:action="@{/attractions/save}" th:object="${touristAttraction}" method="POST">
+
+  <table style="width: 50%; margin: 0 auto; border: 1px solid #ccc; border-collapse: collapse;">
+    <tr>
+      <td><label for="name">Navn:</label></td>
+      <td><input type="text" th:field="*{name}" id="name" required /></td>
+    </tr>
+
+    <tr>
+      <td><label for="description">Beskrivelse:</label></td>
+      <td><textarea th:field="*{description}" id="description" required></textarea></td>
+    </tr>
+
+    <tr>
+      <td><label for="city">By:</label></td>
+      <td>
+        <select th:field="*{city}" id="city" required>
+          <option th:each="city : ${cities}" th:value="${city}" th:text="${city}"></option>
+        </select>
+      </td>
+    </tr>
+
+    <tr>
+      <td><label>Tags:</label></td>
+      <td>
+        <div th:each="tag : ${tags}">
+          <input type="checkbox" th:value="${tag}" th:field="*{tags}" /> <span th:text="${tag}"></span><br />
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <button type="submit" class="btn btn-success">Gem Turistattraktion</button>
+  </div>
+</form>
+
+<div style="text-align: center; margin-top: 20px;">
+  <a th:href="@{/attractions}" class="btn btn-secondary">Tilbage til oversigten</a>
+</div>
+</body>
+</html>
