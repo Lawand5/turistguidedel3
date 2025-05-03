@@ -34,14 +34,13 @@ public class TouristRepository {
                 attraction.setCity(City.valueOf(rs.getString("city")));
 
                 String tagsString = rs.getString("tags");
-                if (tagsString != null) {
+                if (tagsString != null && !tagsString.isEmpty()) {
                     List<Tags> tags = Arrays.stream(tagsString.split(","))
                             .map(String::trim)
-                            .map(tag -> {
+                            .map(tagStr -> {
                                 try {
-                                    return Tags.valueOf(tag);
+                                    return Tags.valueOf(tagStr);
                                 } catch (IllegalArgumentException e) {
-                                    System.err.println("Ugyldigt tag: " + tag);
                                     return null;
                                 }
                             })
