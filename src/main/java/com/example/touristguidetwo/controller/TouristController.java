@@ -49,6 +49,7 @@ public String getTouristAttractionByNameAndTags(@PathVariable String name, Model
         return "redirect:/attractions/";
     }
 
+
     @GetMapping("/{name}/edit")
     public String editTouristAttraction(@PathVariable String name, Model model) {
         TouristAttraction touristAttraction = touristService.findTouristAttractionByName(name);
