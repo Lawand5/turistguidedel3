@@ -31,16 +31,26 @@ public class TouristRepository {
                 attraction.setId(rs.getInt("id"));
                 attraction.setName(rs.getString("name"));
                 attraction.setDescription(rs.getString("description"));
-                attraction.setCity(City.valueOf(rs.getString("city")));
 
+                // Prøv at læse city
+                String cityStr = rs.getString("city");
+                try {
+                    attraction.setCity(City.valueOf(cityStr));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Ugyldig city-værdi i databasen: " + cityStr);
+                    continue; // Spring over denne række
+                }
+
+                // Prøv at læse tags
                 String tagsString = rs.getString("tags");
-                if (tagsString != null && !tagsString.isEmpty()) {
+                if (tagsString != null && !tagsString.isBlank()) {
                     List<Tags> tags = Arrays.stream(tagsString.split(","))
                             .map(String::trim)
-                            .map(tagStr -> {
+                            .map(tag -> {
                                 try {
-                                    return Tags.valueOf(tagStr);
+                                    return Tags.valueOf(tag);
                                 } catch (IllegalArgumentException e) {
+                                    System.out.println("Ugyldigt tag i databasen: " + tag);
                                     return null;
                                 }
                             })
@@ -49,8 +59,8 @@ public class TouristRepository {
                     attraction.setTags(tags);
                 }
 
-
                 attractions.add(attraction);
+                System.out.println("Tilføjede attraktion: " + attraction.getName());
             }
 
         } catch (SQLException e) {
@@ -59,6 +69,7 @@ public class TouristRepository {
 
         return attractions;
     }
+
 
     public TouristAttraction findTouristAttractionByName(String name) {
         String sql = "SELECT * FROM tourist_attraction WHERE name = ?";
