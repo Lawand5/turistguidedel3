@@ -57,8 +57,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>**/*.html</include>
-                    <include>**/*.properties</include>
+                    <include>**/*</include>
                 </includes>
             </resource>
         </resources>
@@ -69,5 +68,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>
