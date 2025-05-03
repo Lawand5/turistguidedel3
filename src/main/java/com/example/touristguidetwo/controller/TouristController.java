@@ -92,12 +92,12 @@ public String getTouristAttractionByNameAndTags(@PathVariable String name, Model
     @GetMapping("/add")
     public String showAddForm(Model model) {
         List<String> cities = touristService.getCities();
-        List<String> tags = Arrays.stream(Tags.values())  // Convert enum to List<String>
+        List<String> tags = Arrays.stream(Tags.values())
                 .map(Enum::name)
                 .collect(Collectors.toList());
 
         model.addAttribute("cities", cities);
-        model.addAttribute("tags", tags);  // This is now a List<String>
+        model.addAttribute("tags", tags);
         model.addAttribute("touristAttraction", new TouristAttraction());
 
         return "addAttraction";
