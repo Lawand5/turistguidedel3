@@ -31,7 +31,13 @@ public class TouristRepository {
                 attraction.setId(rs.getInt("id"));
                 attraction.setName(rs.getString("name"));
                 attraction.setDescription(rs.getString("description"));
-                attraction.setCity(City.valueOf(rs.getString("city")));
+
+                try {
+                    attraction.setCity(City.valueOf(rs.getString("city")));
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Ugyldig city: " + rs.getString("city"));
+                    continue; // spring over denne attraction
+                }
 
                 String tagsString = rs.getString("tags");
                 if (tagsString != null) {
@@ -50,7 +56,6 @@ public class TouristRepository {
                     attraction.setTags(tags);
                 }
 
-
                 attractions.add(attraction);
             }
 
@@ -60,6 +65,7 @@ public class TouristRepository {
 
         return attractions;
     }
+
 
     public TouristAttraction findTouristAttractionByName(String name) {
         String sql = "SELECT * FROM tourist_attraction WHERE name = ?";
