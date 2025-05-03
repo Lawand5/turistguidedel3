@@ -9,6 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class TouristRepository {
@@ -36,10 +37,19 @@ public class TouristRepository {
                 if (tagsString != null) {
                     List<Tags> tags = Arrays.stream(tagsString.split(","))
                             .map(String::trim)
-                            .map(Tags::valueOf)
+                            .map(tag -> {
+                                try {
+                                    return Tags.valueOf(tag);
+                                } catch (IllegalArgumentException e) {
+                                    System.err.println("Ugyldigt tag: " + tag);
+                                    return null;
+                                }
+                            })
+                            .filter(Objects::nonNull)
                             .toList();
                     attraction.setTags(tags);
                 }
+
 
                 attractions.add(attraction);
             }
