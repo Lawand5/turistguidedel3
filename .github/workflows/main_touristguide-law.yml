@@ -9,20 +9,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Set up Java version
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: 'microsoft'
 
       - name: Build with Maven
         run: mvn clean install
 
-      - name: Upload artifact
+      - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
@@ -31,9 +33,22 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
-      - name: Download artifact
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_19ECB38B0DF94222AB6077CCE9926E8A }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D70F84CAD0A34588D06B198FA82BEFCD }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B5672BD12A3A4615BB5526D8658F24A }}
+
+      - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: java-app
@@ -42,5 +57,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'touristguide-law'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: '*.jar'
