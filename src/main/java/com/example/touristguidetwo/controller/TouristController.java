@@ -114,7 +114,7 @@ public String getTouristAttractionByNameAndTags(@PathVariable String name, Model
         touristService.addTouristAttraction(touristAttraction);
 
         return "redirect:/attractions";
-        //.
+        //..
     }
 }
 
